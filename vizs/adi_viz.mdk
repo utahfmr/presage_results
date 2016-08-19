@@ -143,6 +143,14 @@ getting silently corrupted in the r.h.s as compared to the l.h.s. of Figure [#fi
 
 ## LULESH DOE Mini Application [@LULESH2:changes]
 
+```javascript
+Average % Dynamic Instruction Coverage Provided by PRESAGE under Error Model I: 18.49 %
+Average % Dynamic Instruction Coverage Provided by PRESAGE under Error Model II: 18.40 %
+% Static Instruction Coverage Provided by PRESAGE under Error Model I: 19.63 %
+% Static Instruction Coverage Provided by PRESAGE under Error Model II: 28.09 %
+```
+![lulcov]
+
 ---
 | problem_size | total_DIC | DIC_EM1  | % Coverage EM1 | DIC_EM2  | % Coverage EM2 | % Total Coverage | Total SIC | SIC EM1 | % Coverage EM1 | SIC EM2 | % Coverage EM2 | % Total Coverage |
 |:--------------:|:-----------:|:----------:|:----------------:|:----------:|:----------------:|:------------------:|:-----------:|:---------:|:----------------:|:---------:|:----------------:|:------------------:|
@@ -163,17 +171,14 @@ getting silently corrupted in the r.h.s as compared to the l.h.s. of Figure [#fi
 | 64           | 79659935  | 14815016 | 18.597826      | 14706563 | 18.461681      | 37.059507        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
 ---
 
-```javascript
-Average % Dynamic Instruction Coverage Provided by PRESAGE under Error Model I: a %
-Average % Dynamic Instruction Coverage Provided by PRESAGE under Error Model II: a %
-% Static Instruction Coverage Provided by PRESAGE under Error Model I: a %
-% Static Instruction Coverage Provided by PRESAGE under Error Model II: a %
-```
+
 
 
   [dnf]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif { width:400px; vertical-align:middle }
   [dnp]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif { width:400px; vertical-align:middle }
 
+  [lulcov]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/luleshCov.svg { width:75pc; vertical-align:middle }
 
 
+[BIB]
 
