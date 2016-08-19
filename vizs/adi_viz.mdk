@@ -135,11 +135,42 @@ to the native version of ADI kernel where as the r.h.s. refers to the PRESAGE-tr
 due to PRESAGE enabling the flow of errors, we can observe a significantly higher number of elements
 getting silently corrupted in the r.h.s as compared to the l.h.s. of Figure [#fig-psg]. 
 
-
-
  ~ Figure { #fig-psg; caption: "Time Evolution of Differential Computational Data for Grid q using Native (Left) and PRESAGE-transformed (Right) versions of the ADI Kernel." }
  ![dnf] ![dnp]
   ~
+
+# Metrics
+
+## LULESH DOE Mini Application [@LULESH2:changes]
+
+---
+| problem_size | total_DIC | DIC_EM1  | % Coverage EM1 | DIC_EM2  | % Coverage EM2 | % Total Coverage | Total SIC | SIC EM1 | % Coverage EM1 | SIC EM2 | % Coverage EM2 | % Total Coverage |
+|:--------------:|:-----------:|:----------:|:----------------:|:----------:|:----------------:|:------------------:|:-----------:|:---------:|:----------------:|:---------:|:----------------:|:------------------:|
+| 8            | 169090    | 30022    | 17.755042      | 30181    | 17.849074      | 35.604116        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 12           | 547509    | 99809    | 18.229655      | 99789    | 18.226002      | 36.455656        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 16           | 1276530   | 234932   | 18.403954      | 234359   | 18.359067      | 36.763022        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 20           | 2470786   | 456991   | 18.495774      | 455239   | 18.424866      | 36.92064         | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 24           | 4248049   | 787586   | 18.539946      | 783913   | 18.453483      | 36.993429        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 28           | 6724658   | 1248317  | 18.563279      | 1241697  | 18.464835      | 37.028114        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 32           | 10016902  | 1860784  | 18.576442      | 1850107  | 18.469852      | 37.046294        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 36           | 14240894  | 2646587  | 18.584416      | 2630427  | 18.47094       | 37.055356        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 40           | 19513007  | 3627326  | 18.589272      | 3604205  | 18.470782      | 37.060054        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 44           | 25949140  | 4824601  | 18.592528      | 4792693  | 18.469564      | 37.062091        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 48           | 33665818  | 6260012  | 18.594564      | 6217471  | 18.468201      | 37.062765        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 52           | 42778939  | 7955159  | 18.595971      | 7899759  | 18.466468      | 37.062439        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 56           | 53404957  | 9931642  | 18.596854      | 9861169  | 18.464895      | 37.061749        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 60           | 65659794  | 12211061 | 18.597471      | 12122889 | 18.463185      | 37.060655        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+| 64           | 79659935  | 14815016 | 18.597826      | 14706563 | 18.461681      | 37.059507        | 1029      | 202     | 19.630709      | 289     | 28.08552       | 47.716229        |
+---
+
+```javascript
+Average % Dynamic Instruction Coverage Provided by PRESAGE under Error Model I: a %
+Average % Dynamic Instruction Coverage Provided by PRESAGE under Error Model II: a %
+% Static Instruction Coverage Provided by PRESAGE under Error Model I: a %
+% Static Instruction Coverage Provided by PRESAGE under Error Model II: a %
+```
+
+
   [dnf]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif { width:400px; vertical-align:middle }
   [dnp]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif { width:400px; vertical-align:middle }
 
