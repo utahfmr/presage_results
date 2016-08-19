@@ -1,22 +1,30 @@
-Title         : `PRESAGE`
-Author        : **`PR`**ot**`E`**cting **`S`**tructured **`A`**ddress **`G`**eneration against Soft **`E`**rrors
-Author        : `Visualization using Polybench/C :` **`A`**lternate **`D`**irection **`I`**mplicit `Kernel`
+
+Title         : PRESAGE Demo
 Bibliography: presage.bib
 
 <style>
     body.madoko {
-      max-width: 75pc; 
+      max-width: 75pc;       
     }   
 </style>
 
 
 [TITLE]
 
-# `Alternating Direction Implicit Kernel`
+# Overview
+[PRESAGE](http://arxiv.org/abs/1606.08948) (available on [Github](https://utahfmr.github.io/PRESAGE/)) 
+is aimed at protecting structured address computations (SACs) against soft error induced bit-flips, and 
+is developed using [LLVM](http://llvm.org/) compiler infrastructure. The underlying principle of PRESAGE is that maximizing 
+the flow of error helps in better error detection coverage at lower overhead. PRESAGE achieves it by 
+introducing dependency chains between instructions used for SACs at LLVM IR level.We demonstrate the efficacy of 
+PRESAGE by applying it on a publicly available implementation of Alternating Direction Implicit (ADI) kernel provided in 
+[PolyBench/C benchmark suite](http://web.cse.ohio-state.edu/~pouchet/software/polybench/). 
+The ADI kernel is used in simulations of physical problems such as heat conduction, diffusion equation, 
+etc.
 
-In numerical analysis, the *Alternating Direction Implicit* (ADI) method is a *finite difference method* 
-for solving *partial differential equations* (PDEs) [@adi] .It is mostly used for solving the problem of **heat conduction** or solving the **diffusion equation** in two or more dimensions. 
-A sample implementation of the main `ADI` kernel is provided here for ease of reference [@poly]
+# ADI C Implementation
+
+## ADI Kernel
 
 ```javascript
  for (t=1; t<=tsteps; t++) {
@@ -57,9 +65,7 @@ A sample implementation of the main `ADI` kernel is provided here for ease of re
     }    
 ```
 
-## `Initial Conditions`
-
-The adi kernel shown above is timesteped simulation and its initialized using:
+## Initialization Routine
 
 ```javascript
 /* Array initialization. */
@@ -74,64 +80,69 @@ void init_array (int n,double *u)
       }
 }
 ```
-## `Boundary Conditions`
 
-The kernel as shown in [#sec-alternating-direction-implicit-kernel] maintains the boundary condition of `u,q,p and v` internally.
 
-## `Output`
+# Visualizations
+In order to demonstrate how PRESAGE maximizes the flow of errors affecting
+SACs in the ADI kernel, we first visualize the time evolution computational 
+data stored in 2d-grids during a fault-free execution using input parameters 
+described below. Given that the ADI kernel performs time-stepped computations 
+on four computational 2D-grids denoted by arrays u, v, p, and q, we visualize 
+the computational data pertaining to these grids.
 
-This kernel generates `four` 2D arrays, `u,q,p and v` for each timestep and in the plots below, we visualize these arryas for: 
+## Experimental Details
+
+Input parameters and setup details are provided below:
+
 ```javascript
-TimeSteps: 50
-Dimentions: (X=25,Y=25)
+Time-steps: 50
+Grid size (for all 2d-grids u,v,p, and q): 25x25
+Operating System: Ubuntu 16.04
+CPU: Intel(R) Core(TM) i7-6700HQ
+LLVM version: 3.9
 ```
 
-# `PRESAGE` [@psg]
+## Time Evolution of Computational Data in 2D-Grids
 
-`PRESAGE` is an open-source [tool](https://utahfmr.github.io/PRESAGE/) which is aimed at protecting structured address computations against soft errors. It is developed using LLVM compiler infrastructure. PRESAGE applies a novel rewriting scheme, dubbed Relative Base Addressing (RBA) scheme, which introduces dependency chains between same-base-address-sharing GetElementPtr instructions at LLVM intermediate representation (IR) level. Currently, `PRESAGE` is extensively tested on C benchmarks drawn from Polybench/C benchmark suite. However, it should work for any high-level language which can be compiled to LLVM IR.
+Figure [#fig-native] shows the time evolution of the computational data stored
+in 2d-grids u, v, p, and q during a fault-free execution using the input parameters 
+described earlier.
+
+  ~ Figure { #fig-native; caption: "Time Evolution of Computational Data for Grids  u (top-left), v (top-right), p (bottom-left), and q." }
+  ![native_u] ![native_v]
+  ![native_p] ![native_q]
+  ~
+  [native_u]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_u.gif { width:400px; vertical-align:middle }
+  [native_q]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_q.gif { width:400px; vertical-align:middle }
+  [native_p]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_p.gif { width:400px; vertical-align:middle }
+  [native_v]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_v.gif { width:400px; vertical-align:middle }
+
+
+## PRESAGE in Action!
+
+Next, we perform two independent set of fault injection experiments on the native and the 
+PRESAGE-transformed versions of the ADI kernel respectively using the same setup and input parameters 
+described earlier. The first experiment-set comprises a fault-free and a faulty execution on the 
+native version of the ADI kernel where as the second experiment-set consists of a fault-free and a 
+faulty execution on the PRESAGE-transformed version of the ADI kernel. The fault injection profile 
+chosen for both the experiment-sets targets the address of the element with coordinates (12,12) of 
+the grid **q** during 25th time-step for fault injection by flipping its 5th bit from LSB.
+
+Figure [#fig-psg] plots the differential computational data obtained by subtracting the values stored in
+the grid q during a fault-free execution from their corresponding values observed during the faulty execution
+in both the experiment sets. The l.h.s. of Figure [#fig-psg] refers to the experiment-set pertaining
+to the native version of ADI kernel where as the r.h.s. refers to the PRESAGE-transformed one. Clearly, 
+due to PRESAGE enabling the flow of errors, we can observe a significantly higher number of elements
+getting silently corrupted in the r.h.s as compared to the l.h.s. of Figure [#fig-psg]. 
 
 
 
-We now provide visualizations obtained for ADI kernels with and without
-presage transformaed applied. We also study the error propagation 
-characteristics of ADI kernel on native and presage transformed version
+ ~ Figure { #fig-psg; caption: "Time Evolution of Differential Computational Data for Grid q using Native (Left) and PRESAGE-transformed (Right) versions of the ADI Kernel." }
+ ![dnf] ![dnp]
+  ~
+  [dnf]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif { width:400px; vertical-align:middle }
+  [dnp]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif { width:400px; vertical-align:middle }
 
-# `Visualisations`
 
-## `Simulations of the native version of ADI Kernel`
 
-**u** ![native_u] **q** ![native_q]  
-**p** ![native_p] **v** ![native_v] 
-
-## `Simulations with Fault Injection`
-
-Among the `four` output arrays `[u,q,p,v]`, we randomly choose an array `[q]` to perform `fault injection`.
-For the sake of visualization, we perform deterministic *fault injection* at a `Fixed-Timestep:25` and at the center of the `2D array`. Here *fault injection* refers to a single bit-flip in the address of `q[i/2,j/2]` at `Timesteps/2`
-
-The difference between the output array `q` generated by the native kernel and fault-injected kernel is plotted as **DNF** below on the left.
-
-## `Simulation of the Presage transformed Binary with Fault Injection`
-
-The kernel shown above is setup for transformation using [@psg] and the difference between the native output q and the array generated by this transformation is plotted in right, below as **DNP** 
-
-**DNF**: **D**ifference between **N**ative and **F**ault Injection on Native Binary  
-**DNP**:  **D**ifference between **N**ative and Fault Injection on **P**resage transformed Binary  
-
-Notice the `Value` axis of **DNP** , the single event upset to the `&q[i/2,j/2]` causes the data corruption to be evident by diverging to the range `10e6` 
-
-**DNF** ![dnf] **DNP** ![dnp]  
-
-[BIB]
-
-[native_u]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_u.gif "native_u" { width:auto; max-width:39%; vertical-align:middle }
-
-[native_q]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_q.gif "native_q" { width:auto; max-width:39%; vertical-align:middle }
-
-[native_p]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_p.gif "native" { width:auto; max-width:39%; vertical-align:middle }
-
-[native_v]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_v.gif "native_v" { width:auto; max-width:39%; vertical-align:middle }
-
-[dnf]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif "dnf" {width:auto; max-width:39%; vertical-align:middle; caption:"test"; }
-
-[dnp]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif "dnp" {width:auto; max-width:39%; vertical-align:middle}
 

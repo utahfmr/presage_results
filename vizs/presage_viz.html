@@ -2,10 +2,9 @@
 <html lang="en-US">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <meta name="generator" content="Madoko, version 1.0.1" />
+  <meta name="generator" content="Madoko, version 1.0.2" />
   <meta name="viewport" content="initial-scale=1.0" />
-  <meta name="author" content="`Visualization using Polybench/C :` **`A`**lternate **`D`**irection **`I`**mplicit `Kernel`" />
-  <title>`PRESAGE`</title>
+  <title>PRESAGE Demo</title>
   <style type="text/css"  class="link">
   /*# sourceURL=madoko.css */
   
@@ -290,7 +289,7 @@
 <div class="body madoko" style="line-adjust:0">
 <style>
     body.madoko {
-      max-width: 75pc; 
+      max-width: 75pc;       
     }   
 </style>
 
@@ -299,17 +298,17 @@
 
 <div class="titleblock align-center para-block" style="text-align:center;line-adjust:0">
 <div class="titleheader align-center" style="text-align:center;line-adjust:0">
-<div class="title para-block" style="font-size:xx-large;font-weight:bold;margin-bottom:0.5ex;line-adjust:0"><code class="code code1">PRESAGE</code></div></div>
-<div class="authors align-center" style="text-align:center;width:80%;line-adjust:0"><table class="authorrow columns block" style="margin-top:2ex;width:100%;line-adjust:0">
-<tbody><tr><td class="author column" style="text-align:center;line-adjust:0">
-<div class="authorname" style="font-size:large;line-adjust:0"><strong class="strong-star2"><code class="code code1">PR</code></strong>ot<strong class="strong-star2"><code class="code code1">E</code></strong>cting <strong class="strong-star2"><code class="code code1">S</code></strong>tructured <strong class="strong-star2"><code class="code code1">A</code></strong>ddress <strong class="strong-star2"><code class="code code1">G</code></strong>eneration against Soft <strong class="strong-star2"><code class="code code1">E</code></strong>rrors</div></td><td class="author column" style="text-align:center;line-adjust:0">
-<div class="authorname" style="font-size:large;line-adjust:0"><code class="code code1">Visualization using Polybench/C :</code> <strong class="strong-star2"><code class="code code1">A</code></strong>lternate <strong class="strong-star2"><code class="code code1">D</code></strong>irection <strong class="strong-star2"><code class="code code1">I</code></strong>mplicit <code class="code code1">Kernel</code></div></td></tr></tbody></table></div></div><h2 id="sec-alternating-direction-implicit-kernel" class="h1" data-heading-depth="1" style="display:block"><span class="heading-before"><span class="heading-label">1</span>.&#8194;</span><code class="code code1">Alternating Direction Implicit Kernel</code></h2>
-<p class="p noindent">In numerical analysis, the <em class="em-star1">Alternating Direction Implicit</em> (ADI) method is a <em class="em-star1">finite difference method</em> 
-for solving <em class="em-star1">partial differential equations</em> (PDEs)&nbsp;<span class="citations" style="target-element:bibitem">[<a href="#adi" title="The numerical solution of parabolic and elliptic differential equations
-Peaceman and Rachford Jr., 1995" class="bibref localref" style="target-element:bibitem"><span class="cite-number">1</span></a>]</span> .It is mostly used for solving the problem of <strong class="strong-star2">heat conduction</strong> or solving the <strong class="strong-star2">diffusion equation</strong> in two or more dimensions. 
-A sample implementation of the main <code class="code code1">ADI</code> kernel is provided here for ease of reference&nbsp;<span class="citations" style="target-element:bibitem">[<a href="#poly" title="The polybench benchmark suite,
-Polybench/C, 2012" class="bibref localref" style="target-element:bibitem"><span class="cite-number">2</span></a>]</span>
-</p>
+<div class="title para-block" style="font-size:xx-large;font-weight:bold;margin-bottom:0.5ex;line-adjust:0">PRESAGE Demo</div></div></div><h2 id="sec-overview" class="h1" data-heading-depth="1" style="display:block"><span class="heading-before"><span class="heading-label">1</span>.&#8194;</span>Overview</h2>
+<p class="p noindent"><a href="http://arxiv.org/abs/1606.08948">PRESAGE</a> (available on&nbsp;<a href="https://utahfmr.github.io/PRESAGE/">Github</a>) 
+is aimed at protecting structured address computations (SACs) against soft error induced bit-flips, and 
+is developed using&nbsp;<a href="http://llvm.org/">LLVM</a> compiler infrastructure. The underlying principle of PRESAGE is that maximizing 
+the flow of error helps in better error detection coverage at lower overhead. PRESAGE achieves it by 
+introducing dependency chains between instructions used for SACs at LLVM IR level.We demonstrate the efficacy of 
+PRESAGE by applying it on a publicly available implementation of Alternating Direction Implicit (ADI) kernel provided in 
+<a href="http://web.cse.ohio-state.edu/~pouchet/software/polybench/">PolyBench/C benchmark suite</a>. 
+The ADI kernel is used in simulations of physical problems such as heat conduction, diffusion equation, 
+etc.
+</p><h2 id="sec-adi-c-implementation" class="h1" data-heading-depth="1" style="display:block"><span class="heading-before"><span class="heading-label">2</span>.&#8194;</span>ADI C Implementation</h2><h3 id="sec-adi-kernel" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">2.1</span>.&#8194;</span>ADI Kernel</h3>
 <pre class="para-block pre-fenced pre-fenced3 language-javascript lang-javascript javascript colorized" style="display:block"><code> <span style="color:blue">for</span> (t=<span class="constant" style="color:purple">1</span>; t&lt;=tsteps; t++) {
     <span style="color:darkgreen">//Column Sweep</span>
     <span style="color:blue">for</span> (i=<span class="constant" style="color:purple">1</span>; i&lt;n-<span class="constant" style="color:purple">1</span>; i++) {
@@ -345,9 +344,7 @@ Polybench/C, 2012" class="bibref localref" style="target-element:bibitem"><span 
       <span style="color:blue">for</span> (j=n-<span class="constant" style="color:purple">2</span>; j&gt;=<span class="constant" style="color:purple">1</span>; j--) {
             u[i*n+j] = p[i*n+j] * u[i*n+(j+<span class="constant" style="color:purple">1</span>)] + q[i*n+j];
       }
-    }    </code></pre><h3 id="sec-initial-conditions" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">1.1</span>.&#8194;</span><code class="code code1">Initial Conditions</code></h3>
-<p class="p noindent">The adi kernel shown above is timesteped simulation and its initialized using:
-</p>
+    }    </code></pre><h3 id="sec-initialization-routine" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">2.2</span>.&#8194;</span>Initialization Routine</h3>
 <pre class="para-block pre-fenced pre-fenced3 language-javascript lang-javascript javascript colorized" style="display:block"><code><span style="color:darkgreen">/*</span><span style="color:darkgreen"> Array initialization. </span><span style="color:darkgreen">*/</span>
 <span style="color:blue">void</span> init_array (<span style="color:blue">int</span> n,<span style="color:blue">double</span> *u)
 {
@@ -358,43 +355,53 @@ Polybench/C, 2012" class="bibref localref" style="target-element:bibitem"><span 
       {
         u[i*n+j] =  (<span style="color:blue">double</span>) rand(); 
       }
-}</code></pre><h3 id="sec-boundary-conditions" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">1.2</span>.&#8194;</span><code class="code code1">Boundary Conditions</code></h3>
-<p class="p noindent">The kernel as shown in&nbsp;<a href="#sec-alternating-direction-implicit-kernel" title="1.&#8194;Alternating Direction Implicit Kernel" class="localref" style="target-element:h1"><span class="heading-label">1</span></a> maintains the boundary condition of <code class="code code1">u,q,p and v</code> internally.
-</p><h3 id="sec-output" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">1.3</span>.&#8194;</span><code class="code code1">Output</code></h3>
-<p class="p noindent">This kernel generates <code class="code code1">four</code> 2D arrays, <code class="code code1">u,q,p and v</code> for each timestep and in the plots below, we visualize these arryas for: 
+}</code></pre><h2 id="sec-visualizations" class="h1" data-heading-depth="1" style="display:block"><span class="heading-before"><span class="heading-label">3</span>.&#8194;</span>Visualizations</h2>
+<p class="p noindent">In order to demonstrate how PRESAGE maximizes the flow of errors affecting
+SACs in the ADI kernel, we first visualize the time evolution computational 
+data stored in 2d-grids during a fault-free execution using input parameters 
+described below. Given that the ADI kernel performs time-stepped computations 
+on four computational 2D-grids denoted by arrays u, v, p, and q, we visualize 
+the computational data pertaining to these grids.
+</p><h3 id="sec-experimental-details" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">3.1</span>.&#8194;</span>Experimental Details</h3>
+<p class="p noindent">Input parameters and setup details are provided below:
 </p>
-<pre class="para-block pre-fenced pre-fenced3 language-javascript lang-javascript javascript colorized" style="display:block"><code>TimeSteps: <span class="constant" style="color:purple">50</span>
-Dimentions: (X=<span class="constant" style="color:purple">25</span>,Y=<span class="constant" style="color:purple">25</span>)</code></pre><h2 id="sec-presage-psg" class="h1" data-heading-depth="1" style="display:block"><span class="heading-before"><span class="heading-label">2</span>.&#8194;</span><code class="code code1">PRESAGE</code>&nbsp;<span class="citations" style="target-element:bibitem">[<a href="#psg" title="PRESAGE: Protecting Structured Address Generation against Soft Errors
-Sharma, Gopalakrishnan, and Krishnamoorthy, 2016" class="bibref localref" style="target-element:bibitem"><span class="cite-number">3</span></a>]</span></h2>
-<p class="p noindent"><code class="code code1">PRESAGE</code> is an open-source&nbsp;<a href="https://utahfmr.github.io/PRESAGE/">tool</a> which is aimed at protecting structured address computations against soft errors. It is developed using LLVM compiler infrastructure. PRESAGE applies a novel rewriting scheme, dubbed Relative Base Addressing (RBA) scheme, which introduces dependency chains between same-base-address-sharing GetElementPtr instructions at LLVM intermediate representation (IR) level. Currently, <code class="code code1">PRESAGE</code> is extensively tested on C benchmarks drawn from Polybench/C benchmark suite. However, it should work for any high-level language which can be compiled to LLVM IR.
+<pre class="para-block pre-fenced pre-fenced3 language-javascript lang-javascript javascript colorized" style="display:block"><code>Time-steps: <span class="constant" style="color:purple">50</span>
+Grid size (<span style="color:blue">for</span> all <span class="constant" style="color:purple">2</span>d-grids u,v,p, and q): <span class="constant" style="color:purple">25</span>x25
+Operating System: Ubuntu <span class="constant" style="color:purple">16.04</span>
+CPU: Intel(R) Core(TM) i7-<span class="constant" style="color:purple">6700</span>HQ
+LLVM version: <span class="constant" style="color:purple">3.9</span></code></pre><h3 id="sec-time-evolution-of-computational-data-in-2d-grids" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">3.2</span>.&#8194;</span>Time Evolution of Computational Data in 2D-Grids</h3>
+<p class="p noindent">Figure&nbsp;<a href="#fig-native" title="Time Evolution of Computational Data for Grids  u (top-left), v (top-right), p (bottom-left), and q." class="localref" style="target-element:figure"><span class="figure-label">1</span></a> shows the time evolution of the computational data stored
+in 2d-grids u, v, p, and q during a fault-free execution using the input parameters 
+described earlier.
 </p>
-<p class="p indent">We now provide visualizations obtained for ADI kernels with and without
-presage transformaed applied. We also study the error propagation 
-characteristics of ADI kernel on native and presage transformed version
-</p><h2 id="sec-visualisations" class="h1" data-heading-depth="1" style="display:block"><span class="heading-before"><span class="heading-label">3</span>.&#8194;</span><code class="code code1">Visualisations</code></h2><h3 id="sec-simulations-of-the-native-version-of-adi-kernel" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">3.1</span>.&#8194;</span><code class="code code1">Simulations of the native version of ADI Kernel</code></h3>
-<p class="p noindent"><strong class="strong-star2">u</strong> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_u.gif" title="native_u" alt="native_u" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_u.gif" data-linkid="native_u" style="width:auto;max-width:39%;vertical-align:middle"> <strong class="strong-star2">q</strong> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_q.gif" title="native_q" alt="native_q" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_q.gif" data-linkid="native_q" style="width:auto;max-width:39%;vertical-align:middle"><br>
-<strong class="strong-star2">p</strong> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_p.gif" title="native" alt="native_p" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_p.gif" data-linkid="native_p" style="width:auto;max-width:39%;vertical-align:middle"> <strong class="strong-star2">v</strong> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_v.gif" title="native_v" alt="native_v" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_v.gif" data-linkid="native_v" style="width:auto;max-width:39%;vertical-align:middle"> 
-</p><h3 id="sec-simulations-with-fault-injection" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">3.2</span>.&#8194;</span><code class="code code1">Simulations with Fault Injection</code></h3>
-<p class="p noindent">Among the <code class="code code1">four</code> output arrays <code class="code code1">[u,q,p,v]</code>, we randomly choose an array <code class="code code1">[q]</code> to perform <code class="code code1">fault injection</code>.
-For the sake of visualization, we perform deterministic <em class="em-star1">fault injection</em> at a <code class="code code1">Fixed-Timestep:25</code> and at the center of the <code class="code code1">2D array</code>. Here <em class="em-star1">fault injection</em> refers to a single bit-flip in the address of <code class="code code1">q[i/2,j/2]</code> at <code class="code code1">Timesteps/2</code>
+<figure id="fig-native" class="figure floating align-center float" style="text-align:center;float-env:figure;float-name:Figure">
+<p class="p noindent">  <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_u.gif" alt="native_u" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_u.gif" data-linkid="native_u" style="width:400px;vertical-align:middle"> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_v.gif" alt="native_v" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_v.gif" data-linkid="native_v" style="width:400px;vertical-align:middle">
+  <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_p.gif" alt="native_p" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_p.gif" data-linkid="native_p" style="width:400px;vertical-align:middle"> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_q.gif" alt="native_q" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_q.gif" data-linkid="native_q" style="width:400px;vertical-align:middle">
 </p>
-<p class="p indent">The difference between the output array <code class="code code1">q</code> generated by the native kernel and fault-injected kernel is plotted as <strong class="strong-star2">DNF</strong> below on the left.
-</p><h3 id="sec-simulation-of-the-presage-transformed-binary-with-fault-injection" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">3.3</span>.&#8194;</span><code class="code code1">Simulation of the Presage transformed Binary with Fault Injection</code></h3>
-<p class="p noindent">The kernel shown above is setup for transformation using&nbsp;<span class="citations" style="target-element:bibitem">[<a href="#psg" title="PRESAGE: Protecting Structured Address Generation against Soft Errors
-Sharma, Gopalakrishnan, and Krishnamoorthy, 2016" class="bibref localref" style="target-element:bibitem"><span class="cite-number">3</span></a>]</span> and the difference between the native output q and the array generated by this transformation is plotted in right, below as <strong class="strong-star2">DNP</strong> 
+<hr  class="figureline madoko" style="display:block">
+
+<div class="p noindent"><fig-caption class="figure-caption"><span class="caption-before"><strong class="strong-star2">Figure&#160;<span class="figure-label">1</span>.</strong>&#160;</span><span class="caption-text">Time Evolution of Computational Data for Grids  u (top-left), v (top-right), p (bottom-left), and q.</span></fig-caption></div></figure><h3 id="sec-presage-in-action" class="h2" data-heading-depth="2" style="display:block"><span class="heading-before"><span class="heading-label">3.3</span>.&#8194;</span>PRESAGE in Action!</h3>
+<p class="p noindent">Next, we perform two independent set of fault injection experiments on the native and the 
+PRESAGE-transformed versions of the ADI kernel respectively using the same setup and input parameters 
+described earlier. The first experiment-set comprises a fault-free and a faulty execution on the 
+native version of the ADI kernel where as the second experiment-set consists of a fault-free and a 
+faulty execution on the PRESAGE-transformed version of the ADI kernel. The fault injection profile 
+chosen for both the experiment-sets targets the address of the element with coordinates (12,12) of 
+the grid <strong class="strong-star2">q</strong> during 25th time-step for fault injection by flipping its 5th bit from LSB.
 </p>
-<p class="p indent"><strong class="strong-star2">DNF</strong>: <strong class="strong-star2">D</strong>ifference between <strong class="strong-star2">N</strong>ative and <strong class="strong-star2">F</strong>ault Injection on Native Binary<br>
-<strong class="strong-star2">DNP</strong>:  <strong class="strong-star2">D</strong>ifference between <strong class="strong-star2">N</strong>ative and Fault Injection on <strong class="strong-star2">P</strong>resage transformed Binary  
+<p class="p indent">Figure&nbsp;<a href="#fig-psg" title="Time Evolution of Differential Computational Data for Grid q using Native (Left) and PRESAGE-transformed (Right) versions of the ADI Kernel." class="localref" style="target-element:figure"><span class="figure-label">2</span></a> plots the differential computational data obtained by subtracting the values stored in
+the grid q during a fault-free execution from their corresponding values observed during the faulty execution
+in both the experiment sets. The l.h.s. of Figure&nbsp;<a href="#fig-psg" title="Time Evolution of Differential Computational Data for Grid q using Native (Left) and PRESAGE-transformed (Right) versions of the ADI Kernel." class="localref" style="target-element:figure"><span class="figure-label">2</span></a> refers to the experiment-set pertaining
+to the native version of ADI kernel where as the r.h.s. refers to the PRESAGE-transformed one. Clearly, 
+due to PRESAGE enabling the flow of errors, we can observe a significantly higher number of elements
+getting silently corrupted in the r.h.s as compared to the l.h.s. of Figure&nbsp;<a href="#fig-psg" title="Time Evolution of Differential Computational Data for Grid q using Native (Left) and PRESAGE-transformed (Right) versions of the ADI Kernel." class="localref" style="target-element:figure"><span class="figure-label">2</span></a>. 
 </p>
-<p class="p indent">Notice the <code class="code code1">Value</code> axis of <strong class="strong-star2">DNP</strong> , the single event upset to the <code class="code code1">&amp;q[i/2,j/2]</code> causes the data corruption to be evident by diverging to the range <code class="code code1">10e6</code> 
+<figure id="fig-psg" class="figure floating align-center float" style="text-align:center;float-env:figure;float-name:Figure">
+<p class="p noindent"> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif" alt="dnf" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif" data-linkid="dnf" style="width:400px;vertical-align:middle"> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif" alt="dnp" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif" data-linkid="dnp" style="width:400px;vertical-align:middle">
 </p>
-<p class="p indent"><strong class="strong-star2">DNF</strong> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif" title="dnf" alt="dnf" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif" data-linkid="dnf" style="width:auto;max-width:39%;vertical-align:middle"> <strong class="strong-star2">DNP</strong> <img src="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif" title="dnp" alt="dnp" data-path="http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif" data-linkid="dnp" style="width:auto;max-width:39%;vertical-align:middle">  
-</p>
-<div class="bibl" style="bbl-file:out/demo-bib.bbl.mdk"><h2 id="sec-references" class="clearnum h1 heading-references" data-heading-depth="1" style="display:block">References</h2>
-<div class="bibliography bib-numeric" data-hanging-indent="0" data-cite-style="numeric:&#39;[&#39;,&#39;]&#39;,&#39;, &#39;" data-style="madoko-numeric" style="bibstyle:madoko-numeric">
-<div id="adi" class="bibitem" data-cite-year="1995" data-cite-authors="Peaceman and Rachford Jr." data-cite-authors-long="Peaceman and Rachford Jr." data-cite-label="1" data-line="presage.bib:1" style="text-indent:-2rem;margin-left:2rem;searchterm:The%20numerical%20solution%20of%20parabolic%20and%20elliptic%20differential%20equations%20Peaceman%20and%20Rachford%20Jr.%2C%201995;bibitem-label:\5C [1\5C ]"><span class="bibitem-before" style="padding-right:0.5em;display: inline-block; width:calc(2rem - 0.5em);display: inline-block; text-align:right;font-size:90%">[1]</span>D.&#160;W.&#160;Peaceman, and H.&#160;H.&#160;Rachford Jr. &#8220;The Numerical Solution of Parabolic and Elliptic Differential Equations.&#8221; <em class="em-low1">Journal of the Society for Industrial and Applied Mathematics, 3 (1): 28–41</em> doi:10.1137/0103003, MR 0071874. 1995. <a href="http://epubs.siam.org/doi/abs/10.1137/0103003" class="bib-url texturl monospace">http://&#8203;epubs.&#8203;siam.&#8203;org/&#8203;doi/&#8203;abs/&#8203;10.&#8203;1137/&#8203;0103003</a>.&nbsp;<a href="http://www.bing.com/search?q=The%20numerical%20solution%20of%20parabolic%20and%20elliptic%20differential%20equations%20Peaceman%20and%20Rachford%20Jr.%2C%201995" class="bibsearch">&#128270;</a></div>
-<div id="poly" class="bibitem" data-cite-year="2012" data-cite-authors="Polybench/C" data-cite-authors-long="Polybench/C" data-cite-label="2" data-line="presage.bib:11" style="text-indent:-2rem;margin-left:2rem;searchterm:The%20polybench%20benchmark%20suite%2C%20Polybench%2FC%2C%202012;bibitem-label:\5C [2\5C ]"><span class="bibitem-before" style="padding-right:0.5em;display: inline-block; width:calc(2rem - 0.5em);display: inline-block; text-align:right;font-size:90%">[2]</span>Polybench/C.&#160;<em class="em-low1">The Polybench Benchmark Suite,</em>. http://web.cse.ohio-state.edu/&#160;pouchet/software/polybench/#download. 2012.&nbsp;<a href="http://www.bing.com/search?q=The%20polybench%20benchmark%20suite%2C%20Polybench%2FC%2C%202012" class="bibsearch">&#128270;</a></div>
-<div id="psg" class="bibitem" data-cite-year="2016" data-cite-authors="Sharma et al." data-cite-authors-long="Sharma, Gopalakrishnan, and Krishnamoorthy" data-cite-label="3" data-line="presage.bib:18" style="text-indent:-2rem;margin-left:2rem;searchterm:PRESAGE%3A%20Protecting%20Structured%20Address%20Generation%20against%20Soft%20Errors%20Sharma%2C%20Gopalakrishnan%2C%20and%20Krishnamoorthy%2C%202016;bibitem-label:\5C [3\5C ]"><span class="bibitem-before" style="padding-right:0.5em;display: inline-block; width:calc(2rem - 0.5em);display: inline-block; text-align:right;font-size:90%">[3]</span>Vishal Chandra Sharma, Ganesh Gopalakrishnan, and Sriram Krishnamoorthy. &#8220;PRESAGE: Protecting Structured Address Generation against Soft Errors.&#8221; <em class="em-low1">CoRR</em> abs/1606.08948. 2016. <a href="http://arxiv.org/abs/1606.08948" class="bib-url texturl monospace">http://&#8203;arxiv.&#8203;org/&#8203;abs/&#8203;1606.&#8203;08948</a>.&nbsp;<a href="http://www.bing.com/search?q=PRESAGE%3A%20Protecting%20Structured%20Address%20Generation%20against%20Soft%20Errors%20Sharma%2C%20Gopalakrishnan%2C%20and%20Krishnamoorthy%2C%202016" class="bibsearch">&#128270;</a></div></div></div><span data-line=""></span></div>
+<hr  class="figureline madoko" style="display:block">
+
+<div class="p noindent"><fig-caption class="figure-caption"><span class="caption-before"><strong class="strong-star2">Figure&#160;<span class="figure-label">2</span>.</strong>&#160;</span><span class="caption-text">Time Evolution of Differential Computational Data for Grid q using Native (Left) and PRESAGE-transformed (Right) versions of the ADI Kernel.</span></fig-caption></div></figure><span data-line=""></span></div>
 </body>
 
 </html>
