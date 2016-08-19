@@ -177,7 +177,7 @@ Average % Dynamic Instruction Coverage Provided by PRESAGE under Error Model II:
   [dnf]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnf.gif { width:400px; vertical-align:middle }
   [dnp]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/dnp.gif { width:400px; vertical-align:middle }
 
-  [lulcov]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/luleshCov.svg { width:75pc; vertical-align:middle }
+  [lulcov]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/luleshCov.png { width:75pc; vertical-align:middle }
 
 
 [BIB]
