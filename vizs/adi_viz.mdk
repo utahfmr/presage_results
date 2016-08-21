@@ -108,9 +108,10 @@ Figure [#fig-native] shows the time evolution of the computational data stored
 in 2d-grids u, v, p, and q during a fault-free execution using the input parameters 
 described earlier.
 
-  ~ Figure { #fig-native; caption: "Time Evolution of Computational Data for Grids  u (top-left), v (top-right), p (bottom-left), and q." }
-  ![native_u] ![native_v]
-  ![native_p] ![native_q]
+  ~ Figure { #fig-native; caption: "Time Evolution of Computational Data for Grids  u, v, p, and q." }
+ **u**![native_u] **v**![native_v]
+
+ **p**![native_p] **q**![native_q]
   ~
   [native_u]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_u.gif { width:400px; vertical-align:middle }
   [native_q]: http://www.cs.utah.edu/~vinu/research/stencils/presage/presage_results/vizs/barc/native_q.gif { width:400px; vertical-align:middle }
@@ -135,8 +136,10 @@ to the native version of ADI kernel where as the r.h.s. refers to the PRESAGE-tr
 due to PRESAGE enabling the flow of errors, we can observe a significantly higher number of elements
 getting silently corrupted in the r.h.s as compared to the l.h.s. of Figure [#fig-psg]. 
 
- ~ Figure { #fig-psg; caption: "Time Evolution of Differential Computational Data for Grid q using Native (Left) and PRESAGE-transformed (Right) versions of the ADI Kernel." }
- ![dnf] ![dnp]
+ ~ Figure { #fig-psg; caption: "Time Evolution of Differential Computational Data for Grid q using Native and PRESAGE-transformed versions of the ADI Kernel." }
+![dnf]  **Native**
+
+![dnp] **PRESAGE**
   ~
 
 # Coverage Metrics
